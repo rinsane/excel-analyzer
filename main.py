@@ -69,7 +69,7 @@ def print_grouped_by_level1(row, df):
 
 def main():
     df = load_first_excel()
-    row_number = 0
+    row_number = 5 # Enter the (row number from excel sheet) - 4. We need to subtract 4 because of header rows in the excel sheet.
     row = df.iloc[row_number]
 
     print_metadata_section(row, df)
