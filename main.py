@@ -1,18 +1,21 @@
-import os
 import json
+import os
+
 import pandas as pd
 from rich.console import Console
 from rich.text import Text
 
 console = Console()
 
+
 def load_first_excel():
     sheets_dir = "sheets"
     for file in os.listdir(sheets_dir):
         if file.endswith(".xlsx"):
             filepath = os.path.join(sheets_dir, file)
-            return pd.read_excel(filepath, header=[0, 1, 2])
+            return pd.read_excel(filepath, header=[0, 1])
     raise FileNotFoundError("No .xlsx file found in sheets/")
+
 
 def print_metadata_section(row, df):
     """
@@ -20,8 +23,8 @@ def print_metadata_section(row, df):
     """
     url = row[[c for c in df.columns if c[-1] == "url"][0]]
     metadata_raw = row[[c for c in df.columns if c[-1] == "metadata"][0]]
-    dq_feedback = row[[c for c in df.columns if c[-1] == "Data QA feedback"][0]]
-    dq_notes = row[[c for c in df.columns if c[-1] == "Data QA notes"][0]]
+    dq_feedback = row[[c for c in df.columns if c[-1] == "Data QA Feedback"][0]]
+    dq_notes = row[[c for c in df.columns if c[-1] == "Data QA Notes"][0]]
     dq_person = row[[c for c in df.columns if c[-1] == "Data QA person"][0]]
 
     console.print(Text("# Metadata", style="bold magenta"))
@@ -41,39 +44,37 @@ def print_metadata_section(row, df):
     console.print(Text("Data QA person ->", style="bold cyan"), dq_person)
     console.print()
 
+
 def print_grouped_by_level1(row, df):
     """
     Print the first row grouped as:
     # level_1
-      ## level_0
-         ### level_2 -> value
+      ## level_0 -> value
     """
     grouped = {}
-    for col in df.columns[5:]:  # skip first 5
-        lvl0, lvl1, lvl2 = col
+    for col in df.columns[10:]:  # skip first 10
+        # 2-level structure: (lvl0, lvl1)
+        lvl0, lvl1 = col
         if lvl1 not in grouped:
             grouped[lvl1] = {}
-        if lvl0 not in grouped[lvl1]:
-            grouped[lvl1][lvl0] = []
-        grouped[lvl1][lvl0].append((lvl2, row[col]))
+        grouped[lvl1][lvl0] = row[col]
 
     # Pretty print
     for lvl1, trainers in grouped.items():
         console.print(Text(f"# {lvl1}\n", style="bold magenta"))
-        for lvl0, fields in trainers.items():
-            console.print(Text(f"## {lvl0}", style="bold green"))
-            for lvl2, value in fields:
-                console.print(Text(f"{lvl2} ->", style="bold cyan"), value)
-            console.print()
+        for lvl0, value in trainers.items():
+            console.print(Text(f"## {lvl0} ->", style="bold green"), value)
         console.print()
+
 
 def main():
     df = load_first_excel()
-    row_number = 5 # Enter the (row number from excel sheet) - 4. We need to subtract 4 because of header rows in the excel sheet.
+    row_number = 5  # Row number from excel sheet - 3. We need to subtract 3 because of header rows in the excel sheet.
     row = df.iloc[row_number]
 
     print_metadata_section(row, df)
     print_grouped_by_level1(row, df)
+
 
 if __name__ == "__main__":
     main()
