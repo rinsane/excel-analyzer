@@ -49,7 +49,7 @@ def print_grouped_by_level1(row, df):
          ### level_2 -> value
     """
     grouped = {}
-    for col in df.columns[5:]:  # skip first 5
+    for col in df.columns[10:]:  # skip first 5
         lvl0, lvl1, lvl2 = col
         if lvl1 not in grouped:
             grouped[lvl1] = {}
