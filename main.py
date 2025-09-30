@@ -23,8 +23,8 @@ def print_metadata_section(row, df):
     """
     url = row[[c for c in df.columns if c[-1] == "url"][0]]
     metadata_raw = row[[c for c in df.columns if c[-1] == "metadata"][0]]
-    dq_feedback = row[[c for c in df.columns if c[-1] == "Data QA feedback"][0]]
-    dq_notes = row[[c for c in df.columns if c[-1] == "Data QA notes"][0]]
+    dq_feedback = row[[c for c in df.columns if c[-1] == "Data QA Feedback"][0]]
+    dq_notes = row[[c for c in df.columns if c[-1] == "Data QA Notes"][0]]
     dq_person = row[[c for c in df.columns if c[-1] == "Data QA person"][0]]
 
     console.print(Text("# Metadata", style="bold magenta"))
@@ -69,7 +69,7 @@ def print_grouped_by_level1(row, df):
 
 def main():
     df = load_first_excel()
-    row_number = 5  # Enter the (row number from excel sheet) - 4. We need to subtract 4 because of header rows in the excel sheet.
+    row_number = 5  # Row number from excel sheet - 3. We need to subtract 3 because of header rows in the excel sheet.
     row = df.iloc[row_number]
 
     print_metadata_section(row, df)
